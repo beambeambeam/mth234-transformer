@@ -1,27 +1,29 @@
-\documentclass[12pt,a4paper]{article}
+\documentclass[12pt,letterpaper]{article}
 
 \usepackage{fontspec}
 \usepackage{polyglossia}
 \setdefaultlanguage{thai}
 \setotherlanguage{english}
 
-\usepackage[
-  left=4cm,
-  top=3cm,
-  right=2cm,
-  bottom=2cm
-]{geometry}
+\defaultfontfeatures{Scale=1.3,Mapping=tex-text,LetterSpace=0.0}
 
-\setmainfont{Sarabun}[
-    Script=Thai,
-    Language=Default
+\newfontfamily\thaifont[Script=Thai,Scale=1.3]{THSarabunNew.ttf}[
+  Path=fonts/,
+  Extension=.ttf,
+  BoldFont=*-Bold,
+  ItalicFont=*-Italic,
+  BoldItalicFont=*-BoldItalic,
 ]
 
-% English font - using Times which is available on macOS
-% If you want a different font, you can change this or comment it out
-\newfontfamily\englishfont{Times}[
-    Ligatures=TeX
+\setmainfont[Scale=1.3,LetterSpace=0,WordSpace=1.0,FakeStretch=1.0,Mapping=tex-text]{THSarabunNew.ttf}[
+  Path=fonts/,
+  Extension=.ttf,
+  BoldFont=*-Bold,
+  ItalicFont=*-Italic,
+  BoldItalicFont=*-BoldItalic,
 ]
+
+\usepackage{arxiv}
 
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -55,11 +57,31 @@
 This is a sample document that supports both Thai and English.
 \end{abstract}
 
-\section{บทนำ}
+\section{บทนำ (Introduction)}
 
-นี่คือส่วนของบทนำที่เขียนด้วยภาษาไทย
+แบบจำลองภาษาขนาดใหญ่ (Large Language Model: LLM) ถือเป็นหนึ่งในนวัตกรรมสำคัญของยุคปัญญาประดิษฐ์ ที่สามารถเข้าใจ สร้างสรรค์ และโต้ตอบกับภาษามนุษย์ได้อย่างเป็นธรรมชาติ กลไกสำคัญเบื้องหลัง LLM คือสถาปัตยกรรม Transformer ซึ่งอาศัยแนวคิดทาง พีชคณิตเชิงเส้น (Linear Algebra) เป็นรากฐานในการประมวลผลข้อมูลเชิงภาษาในรูปแบบเวกเตอร์และเมทริกซ์อย่างมีประสิทธิภาพ
 
-\section{Introduction}
+ในสาขา วิทยาศาสตร์ข้อมูล (Data Science) และ ปัญญาประดิษฐ์ (Artificial Intelligence) แนวคิดของ Linear Algebra มีบทบาทสำคัญในการจัดการและแปลงข้อมูลจากคำหรือประโยคให้กลายเป็นตัวแทนเชิงตัวเลข (Numerical Representation) เพื่อให้คอมพิวเตอร์สามารถ “เข้าใจ” ความหมายของภาษาได้ เช่น การคำนวณเวกเตอร์ใน Embedding Space, การคูณเมทริกซ์ในกระบวนการ Self-Attention, และการรวมเชิงเส้น (Linear Combination) ของข้อมูลจากหลายแหล่ง
+
+โมเดล Transformer ได้เปลี่ยนแปลงแนวทางการประมวลผลภาษาธรรมชาติ (Natural Language Processing: NLP) อย่างสิ้นเชิง โดยอาศัยโครงสร้าง Attention ที่สามารถให้โมเดล “โฟกัส” กับส่วนสำคัญของประโยคได้อย่างยืดหยุ่น ซึ่งกระบวนการนี้ล้วนขับเคลื่อนด้วยการดำเนินการเชิงเส้น เช่น การคูณเมทริกซ์ระหว่าง Query, Key และ Value ตลอดจนการแปลงเชิงเส้นในแต่ละชั้นของเครือข่ายประสาทเทียม (Neural Network Layers)
+
+รายงานฉบับนี้มุ่งเน้นการแสดงให้เห็นถึงบทบาทของพีชคณิตเชิงเส้นในกระบวนการทำงานของ Transformer โดยเริ่มจากการทบทวนความรู้พื้นฐานที่เกี่ยวข้อง เช่น เวกเตอร์ เมทริกซ์ และการแปลงเชิงเส้น จากนั้นอธิบายโครงสร้างหลักของโมเดล Transformer รวมถึงกลไกการทำงานของ Self-Attention และ Feed Forward Network พร้อมกรณีศึกษาการนำ LLM ไปประยุกต์ใช้ในงานจริง เช่น การสรุปเนื้อหาอัตโนมัติ การตอบคำถาม และการสร้างข้อความเชิงสร้างสรรค์
+
+เนื้อหาในรายงานจะแบ่งออกเป็น 4 ส่วนหลัก ได้แก่
+
+\begin{itemize}
+    \item ความรู้พื้นฐานทางคณิตศาสตร์ที่เกี่ยวข้อง - ทบทวนแนวคิด Linear Algebra ที่เป็นหัวใจของการคำนวณใน Transformer
+
+    \item โครงสร้างและกระบวนการทำงานของ Transformer - อธิบายส่วนประกอบหลัก เช่น Attention, Encoder-Decoder, และการแปลงเชิงเส้นในแต่ละชั้น
+
+    \item กรณีศึกษาและการประยุกต์ใช้ LLM - วิเคราะห์ตัวอย่างการใช้โมเดล Transformer ในงานด้านภาษา โดยประกอบไปด้วย Chatbot และ ระบบแปล
+
+    \item การวิเคราะห์และอภิปรายผล - พิจารณาข้อดี ข้อจำกัด และแนวทางการพัฒนา LLM ด้วยแนวคิดเชิงพีชคณิตในอนาคต
+\end{itemize}
+
+สุดท้าย รายงานนี้จะสรุปถึงความสำคัญของการบูรณาการพีชคณิตเชิงเส้นและเทคโนโลยี Transformer ในการสร้างระบบที่สามารถเข้าใจและสื่อสารด้วยภาษามนุษย์ได้อย่างชาญฉลาด ซึ่งเป็นก้าวสำคัญของวิวัฒนาการปัญญาประดิษฐ์ในยุคปัจจุบัน.
+
+\section{ความรู้พื้นฐานทางคณิตศาสตร์ที่เกี่ยวข้อง (Mathematical Concepts from Linear Algebra)}
 
 This is an introduction section in English.
 
