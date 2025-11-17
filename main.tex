@@ -40,6 +40,9 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
 \usepackage{hyperref}
 \usepackage[style=numeric,backend=biber,language=english]{biblatex}
 \addbibresource{references.bib}
@@ -521,6 +524,13 @@ x \rightarrow Wx+b \rightarrow \max(0,\cdot) \rightarrow Wy+c \rightarrow \text{
 \section{บรรยายรายละเอียดในการประยุกต์ใช้ (Detailed Description of the Application)}
 
 หัวข้อนี้จะอธิบายสถาปัตยกรรม Transformer \cite{vaswani2023attentionneed} ซึ่งเป็นแกนกลางของแบบจำลองภาษาขนาดใหญ่ (Large Language Models: LLMs) ผ่านมุมมองเชิงพีชคณิตเชิงเส้น และแสดงให้เห็นถึงเหตุผลเชิงคณิตศาสตร์ที่ทำให้โมเดลสามารถประมวลผลและเข้าใจภาษาได้อย่างมีประสิทธิภาพ โดยเน้นส่วนประกอบหลัก ได้แก่ การเข้ารหัสคำ การฝังตำแหน่ง กลไกความสนใจ (Attention Mechanism) และโครงสร้างของ Transformer Block
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/transformer-architecture.png}
+    \caption{ภาพรวมสถาปัตยกรรม Transformer ตั้งแต่การเข้ารหัสคำไปจนถึงการเชื่อมต่อแบบ Encoder--Decoder \cite{vaswani2023attentionneed}}
+    \label{fig:transformer-architecture}
+\end{figure}
 
 \subsection{การเข้ารหัสคำ (Token Embeddings) และการฝังตำแหน่ง (Positional Encoding)}
 
