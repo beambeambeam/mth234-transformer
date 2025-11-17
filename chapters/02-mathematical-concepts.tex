@@ -3,11 +3,14 @@
 \subsection{เวกเตอร์ (Vector)}
 
 เวกเตอร์เป็นปริมาณทางคณิตศาสตร์และฟิสิกส์ ประกอบไปด้วย ขนาด และ ทิศทาง โดยสามารถดำเนินการทางคณิตศาสตร์ได้บนปริภูมิเวกเตอร์ ต่างจากปริมาณทางสเกลาร์ (Scalar) ที่อธิบายปริมาณเพียงขนาดอย่างเดียว
+ตัวอย่าง~\ref{ex:vector-3d} แสดงให้เห็นเวกเตอร์สามมิติที่ระบุทิศทางได้ทั้งเชิงพิกัดและเชิงฐานมาตรฐาน
 
 \begin{example}[เวกเตอร์ใน 3 มิติ]\label{ex:vector-3d}
+เวกเตอร์ $\mathbf{v}$ ระบุการเคลื่อนที่ $2$ หน่วยตามแกน $x$, $3$ หน่วยตามแกน $y$ และ $1$ หน่วยตามแกน $z$
 \[
 \mathbf{v} = [2, 3, 1] \quad \text{หรือเขียนในรูป} \quad \mathbf{v} = 2\mathbf{i} + 3\mathbf{j} + 1\mathbf{k}
 \]
+รูปแบบหลังช่วยสื่อว่า $\mathbf{v}$ เป็นผลรวมเชิงเส้นของเวกเตอร์ฐานมาตรฐาน $\mathbf{i}, \mathbf{j}, \mathbf{k}$
 \end{example}
 
 การใช้งานใน Transformer:
@@ -23,8 +26,10 @@
 \subsection{เมทริกซ์ (Matrices)}
 
 เป็นกลุ่มของจำนวนหรือสมาชิกของริงใดๆ เขียนเรียงกันเป็นรูปสี่เหลี่ยมผืนผ้าหรือจัตุรัส กล่าวคือเรียงเป็นแถวในแนวนอน และเรียงเป็นคอลัมน์ในแนวตั้ง เรามักเขียนเมทริกซ์เป็นตารางที่ไม่มีเส้นแบ่งและเขียนวงเล็บคร่อมตารางไว้
+ตัวอย่าง~\ref{ex:matrix-3x2} แสดงเมทริกซ์ที่มี $3$ แถว $2$ คอลัมน์ ซึ่งสามารถตีความได้ว่าเก็บข้อมูลตัวอย่างสามรายการที่แต่ละรายการมีสองคุณลักษณะ
 
 \begin{example}[เมทริกซ์ $3 \times 2$]\label{ex:matrix-3x2}
+แถวที่ $i$ แทนเวกเตอร์ตัวอย่างลำดับที่ $i$ ส่วนแต่ละคอลัมน์เก็บคุณลักษณะเดียวกันของทุกตัวอย่าง
 \[
 A = \begin{bmatrix}
 1 & 2 \\
@@ -32,6 +37,7 @@ A = \begin{bmatrix}
 5 & 6
 \end{bmatrix}
 \]
+ในบริบทของ Transformer สามารถใช้เมทริกซ์ลักษณะนี้จัดเก็บ embeddings ของคำตามลำดับเวลา
 \end{example}
 
 การใช้งานใน Transformer:
@@ -46,7 +52,7 @@ A = \begin{bmatrix}
 
 \subsection{ผลคูณจุด (Dot Product)}
 
-เป็นการดำเนินการระหว่างเวกเตอร์สองตัวที่ให้ผลลัพธ์เป็นสเกลาร์ (ตัวเลข) โดยคำนวณจากผลรวมของผลคูณของสมาชิกที่อยู่ในตำแหน่งเดียวกัน
+เป็นการดำเนินการระหว่างเวกเตอร์สองตัวที่ให้ผลลัพธ์เป็นสเกลาร์ (ตัวเลข) โดยคำนวณจากผลรวมของผลคูณของสมาชิกที่อยู่ในตำแหน่งเดียวกัน เพื่อให้เห็นการคูณและการบวกรวมแบบเป็นลำดับ ตัวอย่าง~\ref{ex:dot-product} แสดงการจับคู่สมาชิกทีละมิติ
 
 \begin{formula}[ผลคูณจุด]\label{form:dot-product}
 สำหรับเวกเตอร์ $\mathbf{a} = [a_1, a_2, \ldots, a_n]$ และ $\mathbf{b} = [b_1, b_2, \ldots, b_n]$
@@ -56,12 +62,14 @@ A = \begin{bmatrix}
 \end{formula}
 
 \begin{example}[คำนวณผลคูณจุด]\label{ex:dot-product}
+เริ่มจากนำสมาชิกที่อยู่ในตำแหน่งเดียวกันมาคูณกัน จากนั้นบวกรวมเพื่อให้ได้สเกลาร์
 \[
 \mathbf{a} = [1, 2, 3], \quad \mathbf{b} = [4, 5, 6]
 \]
 \[
 \mathbf{a} \cdot \mathbf{b} = (1 \times 4) + (2 \times 5) + (3 \times 6) = 4 + 10 + 18 = 32
 \]
+ค่าที่ได้สะท้อนการฉายของ $\mathbf{a}$ บน $\mathbf{b}$ ซึ่งเป็นพื้นฐานของ cosine similarity
 \end{example}
 
 ความสัมพันธ์กับมุม: $\mathbf{a} \cdot \mathbf{b} = \|\mathbf{a}\| \|\mathbf{b}\| \cos(\theta)$ โดย $\theta$ คือมุมระหว่างเวกเตอร์
@@ -82,7 +90,7 @@ A = \begin{bmatrix}
 
 \subsection{การแปลงเชิงเส้น (Linear Transformation)}
 
-เป็นฟังก์ชันระหว่างปริภูมิเวกเตอร์สองปริภูมิที่รักษาการดำเนินการบวกเวกเตอร์และการคูณสเกลาร์ ในทางปฏิบัติ การแปลงเชิงเส้นสามารถแทนด้วยการคูณเมทริกซ์
+เป็นฟังก์ชันระหว่างปริภูมิเวกเตอร์สองปริภูมิที่รักษาการดำเนินการบวกเวกเตอร์และการคูณสเกลาร์ ในทางปฏิบัติ การแปลงเชิงเส้นสามารถแทนด้วยการคูณเมทริกซ์ ตัวอย่าง~\ref{ex:rotation-2d} แสดงเมทริกซ์หมุนที่รักษาความยาวของเวกเตอร์
 
 \begin{formula}[การแปลงเชิงเส้น]\label{form:linear-transformation}
 $T(\mathbf{x}) = A\mathbf{x}$ โดย $A$ เป็นเมทริกซ์การแปลงที่รักษาการบวกและการคูณสเกลาร์ของเวกเตอร์
@@ -101,6 +109,7 @@ A = \begin{bmatrix}
 1
 \end{bmatrix}
 \]
+ผลลัพธ์ยืนยันว่าเวกเตอร์หน่วยตามแกน $x$ ถูกหมุนไปยังแกน $y$ โดยความยาวยังเท่าเดิม
 \end{example}
 
 การใช้งานใน Transformer:
@@ -162,11 +171,14 @@ A = \begin{bmatrix}
 \]
 \end{formula}
 
+\noindent ตัวอย่าง~\ref{ex:softmax} แสดงการคำนวณ Softmax แบบครบถ้วนตั้งแต่ยกกำลังไปจนถึงทำให้ผลรวมเท่ากับ $1$
+
 \begin{example}[คำนวณ Softmax]\label{ex:softmax}
 $\mathbf{x} = [2, 1, 0]$, $\exp(\mathbf{x}) = [7.39, 2.72, 1.00]$, $\sum \exp(\mathbf{x}) = 11.11$
 \[
 \text{softmax}(\mathbf{x}) = [0.665, 0.245, 0.090] \quad \text{(รวมเป็น 1.000)}
 \]
+ค่าที่ได้แสดงให้เห็นว่าองค์ประกอบที่มีค่ามากที่สุด ($x_1 = 2$) ถูกแปลงเป็นความน่าจะเป็นสูงสุด ขณะที่องค์ประกอบอื่นถูกลดทอนตามลำดับ
 \end{example}
 
 \paragraph*{คุณสมบัติสำคัญ}
@@ -200,16 +212,25 @@ $\mathbf{x} = [2, 1, 0]$, $\exp(\mathbf{x}) = [7.39, 2.72, 1.00]$, $\sum \exp(\m
 L2 Norm (Euclidean Norm): $\|\mathbf{v}\|_2 = \sqrt{v_1^2 + v_2^2 + \cdots + v_n^2}$
 \end{formula}
 
+\noindent ตัวอย่าง~\ref{ex:l2-norm} แสดงการวัดความยาวของเวกเตอร์สองมิติแบบดั้งเดิม
+
 \begin{example}[L2 Norm]\label{ex:l2-norm}
-$\mathbf{v} = [3, 4] \Rightarrow \|\mathbf{v}\|_2 = \sqrt{3^2 + 4^2} = \sqrt{25} = 5$
+นับเป็นระยะห่างระหว่างจุด $(3,4)$ กับจุดต้นกำเนิด
+\[
+\mathbf{v} = [3, 4] \Rightarrow \|\mathbf{v}\|_2 = \sqrt{3^2 + 4^2} = \sqrt{25} = 5
+\]
+การคำนวณนี้ตรงกับทฤษฎีบทพีทาโกรัสที่ใช้วัดความยาวด้านตรงข้ามมุมฉาก
 \end{example}
 
 \begin{formula}[L1 Norm]\label{form:l1-norm}
 L1 Norm (Manhattan Norm): $\|\mathbf{v}\|_1 = |v_1| + |v_2| + \cdots + |v_n|$
 \end{formula}
 
+\noindent ตัวอย่าง~\ref{ex:l1-norm} ชี้ให้เห็นว่า L1 วัดระยะทางแบบเดินตามแกน ผลลัพธ์จึงต่างจาก L2
+
 \begin{example}[L1 Norm]\label{ex:l1-norm}
 $\mathbf{v} = [3, 4] \Rightarrow \|\mathbf{v}\|_1 = |3| + |4| = 7$
+ค่านี้เท่ากับจำนวนก้าวที่ต้องเดินตามแนวตั้งและแนวนอนจนครบ $(3,4)$ ซึ่งอธิบายชื่อเล่นว่า Manhattan distance
 \end{example}
 
 การใช้งานใน Transformer:
@@ -234,6 +255,7 @@ $\mathbf{v} = [3, 4] \Rightarrow \|\mathbf{v}\|_1 = |3| + |4| = 7$
 สำหรับเมทริกซ์จัตุรัส $A$ ขนาด $n \times n$ หาก $A\mathbf{v} = \lambda\mathbf{v}$ โดย $\mathbf{v} \neq \mathbf{0}$ แล้ว $\lambda$ เรียกว่าค่าเฉพาะ (eigenvalue) และ $\mathbf{v}$ เรียกว่าเวกเตอร์เฉพาะ (eigenvector)
 
 ความหมาย: เวกเตอร์เฉพาะคือเวกเตอร์ที่เมื่อถูกแปลงด้วยเมทริกซ์ $A$ แล้วทิศทางจะไม่เปลี่ยน มีแต่ขนาดที่เปลี่ยนไปตามค่าเฉพาะ $\lambda$
+ตัวอย่าง~\ref{ex:eigen} แสดงเมทริกซ์ทแยงที่ทำให้หาคู่ eigenvalue-eigenvector ได้โดยตรง
 
 \begin{example}[Eigenvalue/Eigenvector]\label{ex:eigen}
 \[
@@ -249,7 +271,7 @@ A = \begin{bmatrix}
 \end{bmatrix} = 2\mathbf{v}
 \]
 
-ดังนั้น $\lambda = 2$ และ $\mathbf{v} = [1, 0]$ เป็นคู่ eigenvalue-eigenvector
+ดังนั้น $\lambda = 2$ และ $\mathbf{v} = [1, 0]$ เป็นคู่ eigenvalue-eigenvector แสดงให้เห็นว่าเวกเตอร์บนแกน $x$ ถูกยืดขยายเป็นสองเท่าโดยไม่เปลี่ยนทิศทาง
 \end{example}
 
 การใช้งานใน Transformer:
@@ -271,6 +293,7 @@ A = \begin{bmatrix}
 แรงค์ของเมทริกซ์ คือจำนวนแถว (หรือคอลัมน์) ที่เป็นอิสระเชิงเส้นสูงสุดในเมทริกซ์นั้น
 
 ความเป็นอิสระเชิงเส้น: เวกเตอร์ $\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_n$ เป็นอิสระเชิงเส้นถ้าไม่มีเวกเตอร์ใดที่สามารถเขียนเป็นผลรวมเชิงเส้นของเวกเตอร์อื่นๆ ได้
+ตัวอย่าง~\ref{ex:matrix-rank} ชี้ให้เห็นว่าถ้าแถวหนึ่งสามารถสร้างจากอีกสองแถวได้ แรงค์จะลดลง
 
 \begin{example}[Rank ของเมทริกซ์]\label{ex:matrix-rank}
 \[
@@ -280,6 +303,7 @@ A = \begin{bmatrix}
 1 & 4 & 7
 \end{bmatrix}, \quad \text{rank}(A) = 2 \quad \text{เพราะแถวที่ 3} = 2 \times \text{(แถวที่ 2)} - \text{(แถวที่ 1)}
 \]
+\noindent เมทริกซ์จึงมีเพียงสองแถวที่เป็นอิสระจริง ๆ ทำให้การแก้ปัญหาเชิงเส้นด้วยเมทริกซ์นี้มีข้อจำกัด
 \end{example}
 
 การใช้งานใน Transformer:
@@ -314,6 +338,8 @@ $A = U\Sigma V^T$ โดย
 \end{itemize}
 \end{formula}
 
+\noindent ตัวอย่าง~\ref{ex:svd} สาธิตเมทริกซ์ $2 \times 3$ ที่สามารถแยกเป็นส่วนประกอบ $U$, $\Sigma$, $V^T$ เพื่อเห็นแกนหลักและค่าความสำคัญของข้อมูล
+
 \begin{example}[SVD]\label{ex:svd}
 \[
 A = \begin{bmatrix}
@@ -322,7 +348,7 @@ A = \begin{bmatrix}
 \end{bmatrix}
 \]
 
-สามารถแยกเป็น $A = U\Sigma V^T$ ซึ่งช่วยในการหา rank, pseudo-inverse, และ approximation
+สามารถแยกเป็น $A = U\Sigma V^T$ เพื่อระบุทิศทางหลักใน $U$ ค่าความสำคัญใน $\Sigma$ และฐานใหม่ใน $V^T$ ซึ่งช่วยในการหา rank, pseudo-inverse, และ approximation
 \end{example}
 
 การใช้งาน:
@@ -387,10 +413,13 @@ Orthonormal Basis: ชุดของเวกเตอร์ $\{\mathbf{v}_1, \
     \item มีความยาวเป็น $1$: $\|\mathbf{v}_i\| = 1$
 \end{itemize}
 
+\noindent ตัวอย่าง~\ref{ex:standard-basis} แสดงฐานมาตรฐานใน $\mathbb{R}^3$ ที่ตรงตามสองเงื่อนไขนี้พอดี
+
 \begin{example}[Standard Basis ใน $\mathbb{R}^3$]\label{ex:standard-basis}
 \[
 \mathbf{e}_1 = [1, 0, 0], \quad \mathbf{e}_2 = [0, 1, 0], \quad \mathbf{e}_3 = [0, 0, 1]
 \]
+เวกเตอร์ทั้งสามตั้งฉากกันและมีความยาวหนึ่งหน่วย ทำให้สามารถใช้เป็นฐานสำหรับแสดงเวกเตอร์อื่น ๆ ในปริภูมิเดียวกัน
 \end{example}
 
 Orthogonal Matrices: เมทริกซ์ $W$ ที่ $W^T W = I$
@@ -424,6 +453,8 @@ Orthogonal Matrices: เมทริกซ์ $W$ ที่ $W^T W = I$
 ถ้า $y = f(g(x))$ แล้ว $\frac{dy}{dx} = \frac{dy}{dg} \cdot \frac{dg}{dx}$
 \end{formula}
 
+\noindent ตัวอย่าง~\ref{ex:chain-rule} แสดงวิธีแทรกตัวแปรช่วยเพื่อแยกฟังก์ชันชั้นในและชั้นนอกก่อนคูณอนุพันธ์กลับ
+
 \begin{example}[การใช้กฎลูกโซ่]\label{ex:chain-rule}
 \[
 y = (3x + 1)^2
@@ -433,11 +464,12 @@ y = (3x + 1)^2
 \[
 \frac{dy}{dx} = \frac{dy}{du} \cdot \frac{du}{dx} = 2u \cdot 3 = 6(3x + 1)
 \]
+\noindent ผลลัพธ์ตอกย้ำว่ากฎลูกโซ่คือการคูณอนุพันธ์ของชั้นนอก ($2u$) กับอนุพันธ์ของชั้นใน ($3$)
 \end{example}
 
 การใช้งานใน Transformer:
 
-Jacobian Matrices: เมทริกซ์ของ partial derivatives สำหรับฟังก์ชันเวกเตอร์
+Jacobian Matrices: เมทริกซ์ของ partial derivatives สำหรับฟังก์ชันเวกเตอร์ ตัวอย่าง~\ref{ex:jacobian} สาธิตกรณีที่เอาต์พุตสองตัวขึ้นกับตัวแปรเดียวกันทั้งคู่
 \[
 J = \left[\frac{\partial f_i}{\partial x_j}\right] \quad \text{สำหรับ } i=1,\ldots,m \text{ และ } j=1,\ldots,n
 \]
@@ -450,6 +482,7 @@ J = \begin{bmatrix}
 y & x
 \end{bmatrix}
 \]
+\noindent แถวบนระบุว่าเอาต์พุตตัวแรกขยายตาม $x$ สองเท่าและขึ้นกับ $y$ แบบเชิงเส้น ส่วนแถวล่างสื่อว่าเอาต์พุตตัวที่สองขึ้นกับทั้ง $x$ และ $y$ พร้อมกัน
 \end{example}
 
 Backpropagation: อัลกอริทึมสำหรับคำนวณ gradients ในโครงข่ายประสาทเทียม
@@ -468,6 +501,8 @@ Backpropagation: อัลกอริทึมสำหรับคำนวณ
 $\frac{\partial L}{\partial W} = \frac{\partial L}{\partial Y} \cdot \frac{\partial Y}{\partial W}$
 \end{formula}
 
+\noindent ตัวอย่าง~\ref{ex:linear-layer-gradient} แสดงการคำนวณเกรเดียนต์สำหรับชั้นเชิงเส้นที่ใช้กันทั่วไปใน Transformer
+
 \begin{example}[ชั้นเชิงเส้น]\label{ex:linear-layer-gradient}
 \[
 Y = WX + b
@@ -475,9 +510,10 @@ Y = WX + b
 \[
 \frac{\partial L}{\partial W} = \frac{\partial L}{\partial Y} \cdot X^T, \quad \frac{\partial L}{\partial X} = W^T \cdot \frac{\partial L}{\partial Y}
 \]
+สมการนี้แปลได้ว่าแต่ละคอลัมน์ของ $X$ มีผลกับเกรเดียนต์ของ $W$ โดยตรง ขณะที่การไหลย้อนกลับไปยังอินพุตต้องคูณกับ transpose ของเมทริกซ์น้ำหนัก
 \end{example}
 
-Computational Graph: การแทนโครงสร้างของ neural network เป็นกราฟแบบมีทิศทาง (Directed Acyclic Graph) เพื่อคำนวณ derivatives อย่างเป็นระบบ
+Computational Graph: การแทนโครงสร้างของ neural network เป็นกราฟแบบมีทิศทาง (Directed Acyclic Graph) เพื่อคำนวณ derivatives อย่างเป็นระบบ ตัวอย่าง~\ref{ex:computational-graph} ทำให้เห็นแหล่งกำเนิดและปลายทางของค่าต่าง ๆ ชัดเจน
 
 \begin{example}[Computational Graph]\label{ex:computational-graph}
 \[
@@ -486,4 +522,5 @@ Computational Graph: การแทนโครงสร้างของ neur
 \[
 x \rightarrow Wx+b \rightarrow \max(0,\cdot) \rightarrow Wy+c \rightarrow \text{softmax} \rightarrow L
 \]
+กราฟนี้ใช้เป็นแผนที่สำหรับกระจายอนุพันธ์กลับตามลูกศรแต่ละเส้น ทำให้ไม่หลงลืมว่าต้องใช้กฎลูกโซ่กับเส้นทางใดบ้าง
 \end{example}
