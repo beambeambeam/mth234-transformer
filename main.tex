@@ -39,6 +39,8 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[most]{tcolorbox}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{tikz}
@@ -48,6 +50,50 @@
 \usepackage{hyperref}
 \usepackage[style=numeric,backend=biber,language=english]{biblatex}
 \addbibresource{references.bib}
+
+\newtheoremstyle{thaiblock}%
+    {1em}% Space above
+    {1em}% Space below
+    {}% Body font
+    {}% Indent amount
+    {\bfseries}% Head font
+    {}% Punctuation after head
+    {0.5em}% Space after head
+    {\thmname{#1}\thmnumber{~#2}\thmnote{ (#3)}}% Head spec
+
+\theoremstyle{thaiblock}
+\newtheorem{example}{ตัวอย่าง}[section]
+\newtheorem{formula}{สูตร}[section]
+
+\tcolorboxenvironment{example}{%
+    enhanced,
+    breakable,
+    colback=blue!3!white,
+    colframe=blue!55!black,
+    boxrule=0.4pt,
+    arc=2pt,
+    left=1em,
+    right=1em,
+    top=0.8em,
+    bottom=0.8em,
+    before skip=\baselineskip,
+    after skip=\baselineskip
+}
+
+\tcolorboxenvironment{formula}{%
+    enhanced,
+    breakable,
+    colback=green!3!white,
+    colframe=green!50!black,
+    boxrule=0.4pt,
+    arc=2pt,
+    left=1em,
+    right=1em,
+    top=0.8em,
+    bottom=0.8em,
+    before skip=\baselineskip,
+    after skip=\baselineskip
+}
 
 % Fix underfull hbox warnings
 \tolerance=1000
