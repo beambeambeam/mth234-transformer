@@ -1,173 +1,108 @@
 \section{บรรยายรายละเอียดในการประยุกต์ใช้ (Detailed Description of the Application)}
 
-หัวข้อนี้จะอธิบายสถาปัตยกรรม Transformer \cite{vaswani2023attentionneed} ซึ่งเป็นแกนกลางของแบบจำลองภาษาขนาดใหญ่ (Large Language Models: LLMs) ผ่านมุมมองเชิงพีชคณิตเชิงเส้น และแสดงให้เห็นถึงเหตุผลเชิงคณิตศาสตร์ที่ทำให้โมเดลสามารถประมวลผลและเข้าใจภาษาได้อย่างมีประสิทธิภาพ โดยเน้นส่วนประกอบหลัก ได้แก่ การเข้ารหัสคำ การฝังตำแหน่ง กลไกความสนใจ (Attention Mechanism) และโครงสร้างของ Transformer Block
+หัวข้อนี้อธิบายสถาปัตยกรรม Transformer \cite{vaswani2023attentionneed} ซึ่งเป็นแกนกลางของแบบจำลองภาษาขนาดใหญ่ (Large Language Models: LLMs) ผ่านมุมมองพีชคณิตเชิงเส้น พร้อมอธิบายเหตุผลเชิงคณิตศาสตร์ที่ทำให้โมเดลเข้าใจและสร้างภาษาได้อย่างมีประสิทธิภาพ โดยเน้นส่วนประกอบหลัก ได้แก่ การเข้ารหัสคำ การฝังตำแหน่ง กลไกความสนใจ และโครงสร้างของ Transformer Block
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/transformer-architecture.png}
+    \includegraphics[width=0.35\textwidth]{images/transformer-architecture.png}
     \caption{ภาพรวมสถาปัตยกรรม Transformer ตั้งแต่การเข้ารหัสคำไปจนถึงการเชื่อมต่อแบบ Encoder--Decoder \cite{vaswani2023attentionneed}}
     \label{fig:transformer-architecture}
 \end{figure}
 
-\subsection{การเข้ารหัสคำ (Token Embeddings) และการฝังตำแหน่ง (Positional Encoding)}
+\subsection{การเข้ารหัสคำและการฝังตำแหน่ง}\label{subsec:embedding-positional}
 
-เพื่อให้โมเดลสามารถประมวลผลภาษาธรรมชาติได้ จำเป็นต้องแปลงหน่วยข้อมูลเชิงสัญลักษณ์ เช่น คำหรือโทเคน (Tokens) ให้เป็นตัวแทนเชิงตัวเลข โมเดล Transformer ใช้กระบวนการดังนี้
+Transformer จำเป็นต้องแปลงโทเคนเชิงสัญลักษณ์ให้เป็นเวกเตอร์เชิงตัวเลขเพื่อให้ดำเนินการเชิงเส้นได้ สององค์ประกอบที่สำคัญคือ Embedding Matrix และ Positional Encoding
 
 \subsubsection{Token Embeddings}
 
-โทเคนแต่ละตัวจะถูกแทนด้วยเวกเตอร์มิติ $d_{\text{model}}$ ผ่านตาราง Embedding Matrix ขนาด $V \times d_{\text{model}}$ (โดย $V$ คือขนาดคลังคำศัพท์) การแปลงนี้ทำให้โทเคนถูกจัดวางในพื้นที่เวกเตอร์ (Embedding Space) ที่โครงสร้างทางคณิตศาสตร์มีความหมายเชิงความคล้ายคลึง เช่น
-
-\begin{itemize}
-    \item คำที่มีความหมายใกล้กันมีเวกเตอร์ที่อยู่ใกล้กัน
-
-    \item การดำเนินการเชิงเส้น เช่น $\text{king} - \text{man} + \text{woman} \approx \text{queen}$
-\end{itemize}
-
-\subsubsection{ความจำเป็นของ Positional Encoding}
-
-เนื่องจาก Transformer ไม่มีโครงสร้างการวนซ้ำ (Recurrence) หรือโครงสร้างพื้นที่ (Convolution) ทำให้โมเดลไม่สามารถรับรู้ลำดับของโทเคนได้โดยตรง จึงต้องเพิ่มข้อมูลตำแหน่ง (Positional Information) ให้กับเวกเตอร์คำ
-
-\subsubsection{Sinusoidal Positional Encoding}
-
-รูปแบบ Positional Encoding แบบฟังก์ชันไซน์และโคไซน์ช่วยให้โมเดลเข้าใจระยะห่างเชิงลำดับของโทเคน โดยใช้สูตร
-
+ให้ $E \in \mathbb{R}^{V \times d_{\text{model}}}$ เป็นเมทริกซ์ embedding ที่เรียนรู้ได้ ($V$ คือขนาดคลังคำศัพท์, $d_{\text{model}}$ คือมิติของเวกเตอร์) โทเคนลำดับที่ $t$ จะถูกแม็ปเป็นเวกเตอร์
 \[
-PE_{(pos,\,2i)} = \sin\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right)
+\mathbf{x}_t = E[t] \in \mathbb{R}^{d_{\text{model}}}
 \]
+เวกเตอร์เหล่านี้อาศัยโครงสร้างของปริภูมิเวกเตอร์ ทำให้การดำเนินการเชิงเส้น (เช่น การลบแปลความหมาย หรือการคูณเมทริกซ์) สามารถจับความสัมพันธ์เชิงความหมายได้ ตัวอย่างที่พบได้บ่อย คือ $\text{king} - \text{man} + \text{woman} \approx \text{queen}$
 
+\subsubsection{Positional Encoding}\label{subsubsec:pos-encoding}
+
+เนื่องจากสถาปัตยกรรม Transformer ไม่มีการวนซ้ำหรือคอนโวลูชัน โมเดลจึงต้องได้รับข้อมูลตำแหน่งเพื่อรับรู้ลำดับของโทเคน ข้อมูลนี้ถูกเพิ่มเข้าไปในเวกเตอร์ embedding แบบองค์ประกอบต่อองค์ประกอบเพื่อให้เกิดการแทนเชิงเส้นที่มีทั้งข้อมูลความหมายและลำดับ
+
+\paragraph{Sinusoidal Positional Encoding}
+
+Positional Encoding แบบไซน์และโคไซน์นิยมใช้เพราะเป็นฟังก์ชันเชิงกำหนด (deterministic) ที่รองรับความยาวลำดับไม่จำกัด และยังคงใช้การดำเนินการเชิงเส้นในการรวมกับ embedding สูตรมาตรฐานคือ
 \[
+PE_{(pos,\,2i)} = \sin\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right), \qquad
 PE_{(pos,\,2i+1)} = \cos\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right)
 \]
-
-คุณสมบัติสำคัญของ Encoding รูปแบบนี้คือ
-
+โดยที่ $pos$ คือตำแหน่งของโทเคน และ $i$ คือดัชนีมิติ คุณสมบัติหลัก ได้แก่
 \begin{itemize}
-    \item ความต่อเนื่อง: โมเดลเรียนรู้ความสัมพันธ์ระยะไกลได้ดี
-
-    \item ความสามารถในการ generalize: ใช้งานกับความยาวประโยคที่มากกว่าข้อมูลฝึกได้
-
-    \item ดึงดูดด้วย Linear Algebra: เป็นผลรวมเชิงเส้นของเวกเตอร์ Embedding เดิมกับเวกเตอร์ตำแหน่ง
+    \item \textbf{ความต่อเนื่อง}: ฟังก์ชันไซน์/โคไซน์ต่อเนื่อง ทำให้โมเดลเรียนรู้ความสัมพันธ์ระยะไกลได้ดี
+    \item \textbf{การทั่วไปได้ดี}: ใช้ได้กับประโยคที่ยาวกว่าข้อมูลฝึกเพราะสูตรไม่ขึ้นกับความยาวลำดับที่แน่นอน
+    \item \textbf{ความสอดคล้องกับเชิงเส้น}: การรวมแบบ $\mathbf{z}_t = \mathbf{x}_t + PE_t$ ทำให้เวกเตอร์สุดท้ายยังอยู่ในปริภูมิเวกเตอร์เดียวกันและพร้อมสำหรับการคูณเมทริกซ์ในขั้นถัดไป
 \end{itemize}
 
-\subsection{กลไกความสนใจในตัวเอง (Self-Attention Mechanism)}
+\subsection{กลไก Self-Attention}\label{subsec:self-attention}
 
-Self-Attention เป็นหัวใจสำคัญที่ทำให้ Transformer สามารถ ``เลือกโฟกัส'' โทเคนที่มีความสัมพันธ์กันภายในประโยคได้ โดยไม่ต้องประมวลผลตามลำดับเวลาเหมือน RNN กลไกนี้อาศัยการคูณเมทริกซ์เป็นหลัก ซึ่งเป็นการนำแนวคิด Linear Algebra มาประยุกต์โดยตรง
-
-\subsubsection{หลักการทำงานของ Scaled Dot-Product Attention}
-
-โมเดลจะสร้างเวกเตอร์สามชุดจากเวกเตอร์คำแต่ละตัว ได้แก่
-
-\begin{itemize}
-    \item Query ($Q$) -- ตัวแทนการสอบถาม
-
-    \item Key ($K$) -- ตัวแทนความหมาย
-
-    \item Value ($V$) -- ข้อมูลเนื้อหา
-\end{itemize}
-
-ค่าเหล่านี้ได้จากการแปลงเชิงเส้น
-
+Self-Attention เป็นแกนหลักที่ทำให้ Transformer สามารถ ``โฟกัส'' โทเคนที่เกี่ยวข้องกันภายในประโยคเดียวกันได้ ข้อมูลอินพุตถูกจัดเก็บในเมทริกซ์ $X \in \mathbb{R}^{n \times d_{\text{model}}}$ โดย $n$ คือความยาวลำดับ จากนั้นสร้างเวกเตอร์ Query, Key, Value ผ่านการฉายเชิงเส้น
 \[
-Q = XW_Q, \quad K = XW_K, \quad V = XW_V
+Q = X W_Q,\quad K = X W_K,\quad V = X W_V
 \]
+โดย $W_Q, W_K, W_V \in \mathbb{R}^{d_{\text{model}} \times d_k}$ เป็นพารามิเตอร์ที่เรียนรู้ได้และ $d_k$ คือมิติของ Key/Query
 
-\subsubsection{ขั้นตอนการคำนวณ}
+\subsubsection{Scaled Dot-Product Attention}
 
-กระบวนการความสนใจสามารถอธิบายด้วยสมการทางคณิตศาสตร์ดังนี้
+กลไกความสนใจคำนวณดังนี้
+\begin{enumerate}
+    \item \textbf{คะแนนความคล้ายคลึง}: $S = QK^\top \in \mathbb{R}^{n \times n}$ วัดมุมเชิงเชิงเส้นระหว่างโทเคน
+    \item \textbf{การปรับสเกล}: $\tilde{S} = \frac{S}{\sqrt{d_k}}$ เพื่อลดความผันผวนเมื่อ $d_k$ ใหญ่
+    \item \textbf{Softmax}: $\alpha = \text{Softmax}(\tilde{S})$ ได้การแจกแจงความน่าจะเป็นของน้ำหนักความสนใจ
+    \item \textbf{รวมข้อมูล}: $\text{Attention}(Q,K,V) = \alpha V$
+\end{enumerate}
 
-\begin{itemize}
-    \item คำนวณคะแนนความคล้ายคลึง (Dot Product)
-    \[
-    QK^T
-    \]
-
-    \item ปรับขนาดด้วย $\sqrt{d_k}$ เพื่อความเสถียรในการคำนวณ
-    \[
-    \frac{QK^T}{\sqrt{d_k}}
-    \]
-
-    \item ใช้ Softmax เพื่อปรับให้เป็น distribution
-    \[
-    \text{Softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)
-    \]
-
-    \item คูณกับ $V$ เพื่อรวมข้อมูลที่สำคัญ
-    \[
-    \text{Attention}(Q,K,V) = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
-    \]
-\end{itemize}
-
-การคำนวณทั้งหมดนี้เป็นการดำเนินการเชิงเส้นบนเมทริกซ์ ทำให้สามารถประมวลผลแบบขนานได้อย่างมีประสิทธิภาพบน GPU หรือ TPU
-
-\subsection{กลไกความสนใจหลายหัว (Multi-Head Attention)}
-
-Self-Attention เพียงชุดเดียวอาจไม่เพียงพอในการจับความสัมพันธ์ที่หลากหลายของโทเคน ดังนั้น Transformer ใช้ หลายหัวความสนใจ (Attention Heads) เพื่อให้โมเดลเรียนรู้หลายมิติของความสัมพันธ์ในเวลาเดียวกัน
-
-\subsubsection{แนวคิดของ Multi-Head}
-
-แต่ละหัวจะทำ Self-Attention บนพื้นที่เวกเตอร์ย่อย (Subspace) ที่แตกต่างกัน เช่น
-
-\begin{itemize}
-    \item หัวหนึ่งสนใจความใกล้ชิดเชิงตำแหน่ง
-
-    \item หัวหนึ่งสนใจบทบาททางไวยากรณ์
-
-    \item หัวหนึ่งสนใจความหมายเชิงบริบท
-\end{itemize}
-
-ผลลัพธ์สุดท้ายของทุกหัวจะถูกเชื่อมต่อ (Concatenate) และผ่านการแปลงเชิงเส้นด้วยเมทริกซ์ $W_O$
-
-\subsubsection{การดำเนินการเชิงเส้นใน Multi-Head}
-
+ในงานทำนายโทเคนถัดไป (autoregressive) จำเป็นต้องป้องกันไม่ให้โทเคนมองเห็นข้อมูลอนาคต จึงใช้เมทริกซ์หน้ากาก $M \in \mathbb{R}^{n \times n}$ ที่มีค่า $0$ เมื่อตำแหน่งอนุญาตให้มองเห็น และ $-\infty$ เมื่อไม่อนุญาต กลไกจึงปรับเป็น
 \[
-\text{MultiHead}(Q,K,V)= \text{Concat}(\text{head}_1,\ldots,\text{head}_h)W_O
+\text{MaskedAttention}(Q,K,V) = \text{Softmax}\left(\frac{QK^\top}{\sqrt{d_k}} + M\right)V
 \]
+การคำนวณทั้งหมดเป็นการคูณเมทริกซ์ จึงสามารถประมวลผลแบบขนานบน GPU/TPU ได้อย่างมีประสิทธิภาพ
 
-โครงสร้างแบบนี้ช่วยให้โมเดลสามารถเรียนรู้การแสดงผลหลายรูปแบบพร้อมกัน เพิ่มความเข้าใจเชิงบริบทอย่างลึกซึ้ง
+\subsection{กลไกแบบ Multi-Head Attention}\label{subsec:multi-head}
 
-รูปที่~\ref{fig:scaled-dot-product-multi-head} แสดงการเชื่อมโยงระหว่าง Scaled Dot-Product Attention และ Multi-Head Attention โดยเน้นให้เห็นว่าการคำนวณคะแนนความสนใจในแต่ละหัวสามารถทำงานคู่ขนานกันได้ ช่วยให้โมเดลจับความสัมพันธ์เชิงบริบทหลายแบบพร้อมกัน \cite{vaswani2023attentionneed}
+Self-Attention เพียงหัวเดียวอาจจับได้เพียงบางแง่มุมของความสัมพันธ์ โครงสร้าง Multi-Head จึงทำซ้ำ Self-Attention หลายชุดใน subspace ที่แตกต่างกัน จากนั้นเชื่อมผลลัพธ์กลับเข้าด้วยกัน
+\[
+\text{head}_i = \text{Attention}(Q W_Q^{(i)}, K W_K^{(i)}, V W_V^{(i)}), \qquad
+\text{MultiHead}(Q,K,V) = \text{Concat}(\text{head}_1,\ldots,\text{head}_h) W_O
+\]
+แต่ละหัวอาจเน้นมุมมองต่างกัน เช่น โครงสร้างไวยากรณ์ ระยะทางเชิงตำแหน่ง หรือบริบทเชิงความหมาย ภาพประกอบ~\ref{fig:scaled-dot-product-multi-head} แสดงความเชื่อมโยงระหว่าง Scaled Dot-Product และ Multi-Head Attention
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.65\textwidth]{images/scaled-dot-product-attention-multi-head-attention.png}
-    \caption{(ซ้าย) Scaled Dot-Product Attention คำนวณน้ำหนักความสนใจด้วยการปรับสเกลคะแนนก่อนผ่าน Softmax (ขวา) Multi-Head Attention ประกอบด้วยหลายชั้นความสนใจที่ทำงานขนานกันเพื่อรวมมุมมองที่หลากหลาย \cite{vaswani2023attentionneed}}
+    \includegraphics[width=0.68\textwidth]{images/scaled-dot-product-attention-multi-head-attention.png}
+    \caption{(ซ้าย) Scaled Dot-Product Attention ปรับคะแนนก่อน Softmax (ขวา) Multi-Head Attention ทำงานแบบขนานหลายหัวเพื่อดึงบริบทหลากหลาย \cite{vaswani2023attentionneed}}
     \label{fig:scaled-dot-product-multi-head}
 \end{figure}
 
-\subsection{โครงสร้าง Transformer Block และการเชื่อมต่อระหว่างชั้น}
+\subsection{โครงสร้าง Transformer Block และ Encoder--Decoder}\label{subsec:transformer-block}
 
-แต่ละ Block ของ Transformer ประกอบด้วยสองส่วนหลัก:
+แต่ละ Transformer Block ประกอบด้วยลำดับของชั้นเชิงเส้นและไม่เชิงเส้นที่ผูกกับแนวคิด Residual Connection และ Layer Normalization เพื่อรักษาเสถียรภาพการเรียนรู้
 
 \subsubsection{Self-Attention Layer}
 
-ประมวลผลความสัมพันธ์ระหว่างโทเคนทั้งหมด
-
-\subsubsection{Feed-Forward Neural Network (FFN)}
-
-เป็นการแปลงเชิงเส้นสองชั้น พร้อมฟังก์ชัน $\text{ReLU}$ หรือ $\text{GELU}$
-
+อินพุต $\mathbf{x}$ จะถูกส่งผ่าน Multi-Head Self-Attention เพื่อรับเวกเตอร์บริบท $\mathbf{c}$ แล้วใช้ Residual Connection และ Layer Normalization
 \[
-\text{FFN}(x) = W_2\max(0, W_1x + b_1) + b_2
+\mathbf{y} = \text{LayerNorm}(\mathbf{x} + \text{MultiHead}(\mathbf{x}, \mathbf{x}, \mathbf{x}))
 \]
 
-\subsubsection{Residual Connections และ Layer Normalization}
+\subsubsection{Feed-Forward Network (FFN)}
 
-เพื่อเพิ่มเสถียรภาพของการฝึก โมเดลใช้ค่าผลลัพธ์เดิมของชั้นนำมาบวกกลับเข้ากับผลลัพธ์ใหม่
-
+แต่ละโทเคนผ่าน FFN สองชั้นที่ใช้ฟังก์ชันไม่เชิงเส้น (เช่น ReLU หรือ GELU) ทำงานแบบจุดต่อจุด
 \[
-x' = \text{LayerNorm}(x + \text{Attention}(x))
+\text{FFN}(x) = W_2\,\sigma(W_1 x + b_1) + b_2
 \]
+ผลลัพธ์ถูกห่อด้วย Residual Connection เช่นเดียวกัน: $\mathbf{z} = \text{LayerNorm}(\mathbf{y} + \text{FFN}(\mathbf{y}))$
 
-วิธีนี้ช่วยป้องกันปัญหา gradient vanishing และทำให้ฝึกโมเดลลึกหลายสิบชั้นได้
+\subsubsection{Encoder--Decoder Architecture}
 
-\subsubsection{สถาปัตยกรรม Encoder--Decoder}
-
-ใน Transformer ดั้งเดิม \cite{vaswani2023attentionneed}
-
-\begin{itemize}
-    \item Encoder สกัดความหมายบริบทของอินพุต
-
-    \item Decoder ใช้ Masked Self-Attention เพื่อคาดเดาคำถัดไป และใช้ Cross-Attention เพื่ออ้างอิงข้อมูลจาก Encoder
-\end{itemize}
-
-โมเดลประเภท LLM เช่น GPT ใช้ Decoder-only Architecture แต่ยังคงใช้แนวคิด Attention ทั้งหมด
+สถาปัตยกรรมดั้งเดิมของ Transformer มีสองส่วน
+\begin{enumerate}
+    \item \textbf{Encoder}: ซ้อนบล็อก Self-Attention+FFN หลายชั้นเพื่อสกัดบริบทของลำดับอินพุต ผลลัพธ์คือเมทริกซ์บริบทที่เข้มข้นทางความหมาย
+    \item \textbf{Decoder}: ใช้ Masked Self-Attention เพื่อคาดเดาโทเคนถัดไป พร้อม Cross-Attention ที่ใช้ Query จาก Decoder และ Key/Value จาก Encoder เพื่อดึงข้อมูลต้นทางกลับมาใช้
+\end{enumerate}
+โมเดล LLM แบบ GPT ใช้ Decoder-only แต่ยังยึดหลักการ Masked Self-Attention, Residual Connection และ FFN เช่นเดียวกัน
