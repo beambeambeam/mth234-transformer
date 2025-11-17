@@ -109,6 +109,40 @@ A = \begin{bmatrix}
     \item Dimensionality: การรักษามิติข้อมูลผ่านการ concatenate และ linear projection
 \end{itemize}
 
+รูปที่~\ref{fig:projection-schematic} แสดงให้เห็นอย่างเป็นขั้นตอนว่าการคูณเมทริกซ์ระหว่างอินพุต $X$ และเมทริกซ์น้ำหนัก $W_Q$, $W_K$, $W_V$ ทำให้ได้เวกเตอร์ $Q$, $K$, $V$ ที่มีมิติแตกต่างกันเพื่อนำไปใช้ในกลไกความสนใจ โดยกำกับด้วยป้ายกำกับมิติที่ช่วยเน้นว่าการดำเนินการทั้งหมดเป็นการแปลงเชิงเส้นภายใต้กรอบพีชคณิตเชิงเส้น
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[font=\small]
+        \tikzstyle{tensor}=[draw,rounded corners=3pt,minimum width=2.1cm,minimum height=1.1cm,thick]
+        \node[tensor,fill=yellow!25] (X) at (0,0) {$X$};
+        \node[below=0.25cm of X] {\scriptsize $\mathbb{R}^{n \times d_{\text{model}}}$};
+
+        \node[tensor,fill=orange!20] (WQ) at (4,2) {$W_Q$};
+        \node[below=0.25cm of WQ,align=center] {\scriptsize $\mathbb{R}^{d_{\text{model}} \times d_k}$};
+        \node[tensor,fill=orange!20] (WK) at (4,0) {$W_K$};
+        \node[below=0.25cm of WK,align=center] {\scriptsize $\mathbb{R}^{d_{\text{model}} \times d_k}$};
+        \node[tensor,fill=orange!20] (WV) at (4,-2) {$W_V$};
+        \node[below=0.25cm of WV,align=center] {\scriptsize $\mathbb{R}^{d_{\text{model}} \times d_v}$};
+
+        \node[tensor,fill=cyan!25] (Q) at (8,2) {$Q$};
+        \node[below=0.25cm of Q,align=center] {\scriptsize $\mathbb{R}^{n \times d_k}$};
+        \node[tensor,fill=cyan!25] (K) at (8,0) {$K$};
+        \node[below=0.25cm of K,align=center] {\scriptsize $\mathbb{R}^{n \times d_k}$};
+        \node[tensor,fill=cyan!25] (V) at (8,-2) {$V$};
+        \node[below=0.25cm of V,align=center] {\scriptsize $\mathbb{R}^{n \times d_v}$};
+
+        \draw[->,thick] (X) -- (WQ);
+        \draw[->,thick] (WQ) -- node[above,sloped,inner sep=2pt] {$Q = XW_Q$} (Q);
+        \draw[->,thick] (X) -- (WK);
+        \draw[->,thick] (WK) -- node[above,sloped,inner sep=2pt] {$K = XW_K$} (K);
+        \draw[->,thick] (X) -- (WV);
+        \draw[->,thick] (WV) -- node[above,sloped,inner sep=2pt] {$V = XW_V$} (V);
+    \end{tikzpicture}
+    \caption{แผนภาพการคูณเมทริกซ์ของอินพุต $X$ กับเมทริกซ์น้ำหนัก $W_Q$, $W_K$, $W_V$ เพื่อสร้าง $Q$, $K$, $V$ พร้อมป้ายกำกับมิติ (Dimension Labels) แสดงให้เห็นโครงสร้างเชิงพีชคณิตของการแปลงเชิงเส้น}
+    \label{fig:projection-schematic}
+\end{figure}
+
 \subsection{ฟังก์ชัน Softmax และการกระจายความน่าจะเป็น (Softmax and Probability Distribution)}
 
 ฟังก์ชัน Softmax เป็นฟังก์ชันที่แปลงเวกเตอร์ของตัวเลขจริงให้เป็นเวกเตอร์ของความน่าจะเป็นที่รวมกันมีค่าเป็น $1$ โดยค่าที่มากกว่าจะได้ความน่าจะเป็นที่สูงกว่า
