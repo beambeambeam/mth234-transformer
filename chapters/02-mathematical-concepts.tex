@@ -38,7 +38,6 @@ A = \begin{bmatrix}
 5 & 6
 \end{bmatrix}
 \]
-ในบริบทของ Transformer สามารถใช้เมทริกซ์ลักษณะนี้จัดเก็บ embeddings ของคำตามลำดับเวลา
 \end{example}
 
 การใช้งานใน Transformer:
@@ -110,7 +109,6 @@ A = \begin{bmatrix}
 1
 \end{bmatrix}
 \]
-ผลลัพธ์ยืนยันว่าเวกเตอร์หน่วยตามแกน $x$ ถูกหมุนไปยังแกน $y$ โดยความยาวยังเท่าเดิม
 \end{example}
 
 การใช้งานใน Transformer:
@@ -182,7 +180,7 @@ $\mathbf{x} = [2, 1, 0]$, $\exp(\mathbf{x}) = [7.39, 2.72, 1.00]$, $\sum \exp(\m
 ค่าที่ได้แสดงให้เห็นว่าองค์ประกอบที่มีค่ามากที่สุด ($x_1 = 2$) ถูกแปลงเป็นความน่าจะเป็นสูงสุด ขณะที่องค์ประกอบอื่นถูกลดทอนตามลำดับ
 \end{example}
 
-\paragraph*{คุณสมบัติสำคัญ}
+\paragraph*{คุณสมบัติ}
 \begin{itemize}
     \item Output $\in [0,1]$ และ $\sum(\text{output}) = 1$
 
@@ -226,13 +224,6 @@ L2 Norm (Euclidean Norm): $\|\mathbf{v}\|_2 = \sqrt{v_1^2 + v_2^2 + \cdots + v_n
 \begin{formula}[L1 Norm]\label{form:l1-norm}
 L1 Norm (Manhattan Norm): $\|\mathbf{v}\|_1 = |v_1| + |v_2| + \cdots + |v_n|$
 \end{formula}
-
-\noindent ตัวอย่าง~\ref{ex:l1-norm} ชี้ให้เห็นว่า L1 วัดระยะทางแบบเดินตามแกน ผลลัพธ์จึงต่างจาก L2
-
-\begin{example}[L1 Norm]\label{ex:l1-norm}
-$\mathbf{v} = [3, 4] \Rightarrow \|\mathbf{v}\|_1 = |3| + |4| = 7$
-ค่านี้เท่ากับจำนวนก้าวที่ต้องเดินตามแนวตั้งและแนวนอนจนครบ $(3,4)$ ซึ่งอธิบายชื่อเล่นว่า Manhattan distance
-\end{example}
 
 การใช้งานใน Transformer:
 
@@ -352,7 +343,7 @@ A = \begin{bmatrix}
 สามารถแยกเป็น $A = U\Sigma V^T$ เพื่อระบุทิศทางหลักใน $U$ ค่าความสำคัญใน $\Sigma$ และฐานใหม่ใน $V^T$ ซึ่งช่วยในการหา rank, pseudo-inverse, และ approximation
 \end{example}
 
-การใช้งาน:
+การใช้งานใน Transformer:
 
 \begin{itemize}
     \item การวิเคราะห์และบีบอัดโมเดล
@@ -374,7 +365,7 @@ $A = QR$ โดย
 \end{itemize}
 \end{formula}
 
-การใช้งาน:
+การใช้งานใน Transformer:
 
 \begin{itemize}
     \item แก้ระบบสมการเชิงเส้น
@@ -396,7 +387,7 @@ $A = LU$ โดย
 \end{itemize}
 \end{formula}
 
-การใช้งาน:
+การใช้งานใน Transformer:
 
 \begin{itemize}
     \item แก้ระบบสมการเชิงเส้นอย่างมีประสิทธิภาพ
@@ -414,18 +405,10 @@ Orthonormal Basis: ชุดของเวกเตอร์ $\{\mathbf{v}_1, \
     \item มีความยาวเป็น $1$: $\|\mathbf{v}_i\| = 1$
 \end{itemize}
 
-\noindent ตัวอย่าง~\ref{ex:standard-basis} แสดงฐานมาตรฐานใน $\mathbb{R}^3$ ที่ตรงตามสองเงื่อนไขนี้พอดี
-
-\begin{example}[Standard Basis ใน $\mathbb{R}^3$]\label{ex:standard-basis}
-\[
-\mathbf{e}_1 = [1, 0, 0], \quad \mathbf{e}_2 = [0, 1, 0], \quad \mathbf{e}_3 = [0, 0, 1]
-\]
-เวกเตอร์ทั้งสามตั้งฉากกันและมีความยาวหนึ่งหน่วย ทำให้สามารถใช้เป็นฐานสำหรับแสดงเวกเตอร์อื่น ๆ ในปริภูมิเดียวกัน
-\end{example}
 
 Orthogonal Matrices: เมทริกซ์ $W$ ที่ $W^T W = I$
 
-\paragraph*{คุณสมบัติสำคัญ}
+\paragraph*{คุณสมบัติ}
 \begin{itemize}
     \item รักษาความยาวเวกเตอร์: $\|W\mathbf{x}\| = \|\mathbf{x}\|$
 
@@ -465,7 +448,6 @@ y = (3x + 1)^2
 \[
 \frac{dy}{dx} = \frac{dy}{du} \cdot \frac{du}{dx} = 2u \cdot 3 = 6(3x + 1)
 \]
-\noindent ผลลัพธ์ตอกย้ำว่ากฎลูกโซ่คือการคูณอนุพันธ์ของชั้นนอก ($2u$) กับอนุพันธ์ของชั้นใน ($3$)
 \end{example}
 
 การใช้งานใน Transformer:
@@ -523,5 +505,4 @@ Computational Graph: การแทนโครงสร้างของ neur
 \[
 x \rightarrow Wx+b \rightarrow \max(0,\cdot) \rightarrow Wy+c \rightarrow \text{softmax} \rightarrow L
 \]
-กราฟนี้ใช้เป็นแผนที่สำหรับกระจายอนุพันธ์กลับตามลูกศรแต่ละเส้น ทำให้ไม่หลงลืมว่าต้องใช้กฎลูกโซ่กับเส้นทางใดบ้าง
 \end{example}
