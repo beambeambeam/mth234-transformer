@@ -1,9 +1,39 @@
-\documentclass[12pt,letterpaper]{article}
+\documentclass[12pt,letterpaper]{report}
+\usepackage[margin=1in]{geometry}
+\usepackage{tocloft}
+\renewcommand{\cftfigpresnum}{\bfseries รูปที่ }
+\setlength{\cftfignumwidth}{5em}
+\renewcommand{\cftchappresnum}{Chapter }
+\setlength{\cftchapnumwidth}{5em}
+
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries}
+  {\chaptertitlename\ \thechapter}
+  {20pt}
+  {\Huge}
+% Remove * to allow indentation of the first paragraph
+\titlespacing{\chapter}{0pt}{-20pt}{20pt}
+\titlespacing{\section}{0pt}{3.5ex plus 1ex minus .2ex}{2.3ex plus .2ex}
+\titlespacing{\subsection}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+\titlespacing{\subsubsection}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 
 \usepackage{fontspec}
 \usepackage{polyglossia}
 \setdefaultlanguage{thai}
 \setotherlanguage{english}
+
+% Force "Chapter" instead of "บทที่"
+\AtBeginDocument{
+  \renewcommand{\chaptername}{Chapter}
+  \renewcommand{\contentsname}{สารบัญ (Table of Contents)}
+  \renewcommand{\listfigurename}{สารบัญรูปภาพ (List of Figures)}
+  \ifdefined\captionsthai
+    \addto\captionsthai{\renewcommand{\chaptername}{Chapter}}
+    \addto\captionsthai{\renewcommand{\contentsname}{สารบัญ (Table of Contents)}}
+    \addto\captionsthai{\renewcommand{\listfigurename}{สารบัญรูปภาพ (List of Figures)}}
+  \fi
+}
 
 \defaultfontfeatures{Scale=1.3,Mapping=tex-text,LetterSpace=0.0}
 
@@ -31,7 +61,10 @@
   BoldItalicFont=*-BoldItalic,
 ]
 
-\usepackage{arxiv}
+%\usepackage{arxiv}
+
+\usepackage{indentfirst}
+\setlength{\parindent}{2.5em}
 
 % Fix header height warning
 \setlength{\headheight}{14.49998pt}
@@ -47,11 +80,11 @@
 \usetikzlibrary{arrows.meta,positioning}
 \usepackage{caption}
 \captionsetup{font=small,labelfont=bf}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage[style=numeric,backend=biber,language=english]{biblatex}
 \addbibresource{references.bib}
 
-\renewcommand{\abstractname}{บทคัดย่อ (Abstract)}
+%\renewcommand{\abstractname}{บทคัดย่อ (Abstract)}
 
 \newtheoremstyle{thaiblock}%
     {1em}% Space above
@@ -102,50 +135,36 @@
 \emergencystretch=3em
 \hbadness=1000
 
-% Author names and codes - edit these directly
-\newcommand{\authornameone}{นายกันต์ธีร์ ดวงมณี}
-\newcommand{\authorcodeone}{67070501003}
-\newcommand{\authornametwo}{นายนัธทวัฒน์ ปริมสิริคุณาวุฒิ์}
-\newcommand{\authorcodetwo}{67070501027}
-\newcommand{\authornamethree}{นายวิศิษฐ์ สุวรรณเนาว์}
-\newcommand{\authorcodethree}{67070501042}
-\newcommand{\authornamefour}{นายศุภวิชญ์ มารยาท}
-\newcommand{\authorcodefour}{67070501045}
-\newcommand{\authornamefive}{นายพลวริษฐ์ วัฒนเหมรัตน์}
-\newcommand{\authorcodefive}{67070501067}
-
-\title{Transformer: พีชคณิตเชิงเส้นที่เข้าใจภาษามนุษย์}
-\author{%
-    \begin{tabular}{@{}ll@{}}
-        \textbf{\authornameone} & \textbf{\authorcodeone} \\
-        \textbf{\authornametwo} & \textbf{\authorcodetwo} \\
-        \textbf{\authornamethree} & \textbf{\authorcodethree} \\
-        \textbf{\authornamefour} & \textbf{\authorcodefour} \\
-        \textbf{\authornamefive} & \textbf{\authorcodefive}
-    \end{tabular}
-}
-\date{}
-
 \begin{document}
 
-\maketitle
+% Front Matter
+\pagenumbering{roman}
 
-\begin{abstract}
-รายงานฉบับนี้นำเสนอความเชื่อมโยงระหว่างพีชคณิตเชิงเส้นและสถาปัตยกรรม Transformer ซึ่งเป็นรากฐานของแบบจำลองภาษาขนาดใหญ่ (Large Language Models: LLMs) สมัยใหม่ โดยอธิบายการทำงานขององค์ประกอบหลัก ได้แก่ การเข้ารหัสคำ การฝังตำแหน่ง กลไก Self-Attention และ Multi-Head Attention ตลอดจนโครงสร้างของ Transformer Block ผ่านมุมมองของเวกเตอร์ เมทริกซ์ การแปลงเชิงเส้น ฟังก์ชัน Softmax บรรทัดฐาน ค่าเฉพาะ และการแพร่กระจายย้อนกลับ แนวคิดทางคณิตศาสตร์เหล่านี้เป็นแกนสำคัญที่ทำให้ Transformer สามารถจับความสัมพันธ์เชิงบริบท ประมวลผลแบบขนาน และเรียนรู้โครงสร้างภาษาที่ซับซ้อนได้อย่างมีประสิทธิภาพ รายงานยังนำเสนอกรณีศึกษา เช่น Chatbot ระบบแปลภาษา และการสรุปข้อความ เพื่อแสดงการประยุกต์ใช้โมเดล Transformer ในงานจริง สุดท้ายจบด้วยการวิเคราะห์ข้อดี ข้อจำกัด และความสำคัญของพีชคณิตเชิงเส้นต่อการพัฒนาโมเดลภาษาในยุคปัจจุบัน
-\end{abstract}
+\input{frontmatter/cover}
+\clearpage
+
+\input{frontmatter/abstract}
+\clearpage
+
+\tableofcontents
+\clearpage
+
+\listoffigures
+\clearpage
+
+% Main Content
+\pagenumbering{arabic}
+\setlength{\parindent}{2.5em}
+\setlength{\parskip}{6pt}
 
 \input{chapters/01-introduction}
-
 \input{chapters/02-mathematical-concepts}
-
 \input{chapters/03-application}
-
 \input{chapters/04-case-study}
-
 \input{chapters/05-analysis}
-
 \input{chapters/06-conclusion}
 
-\printbibliography[title={แหล่งข้อมูลอ้างอิง (References)}]
+\clearpage
+\printbibliography[heading=bibintoc, title={เอกสารอ้างอิง (References)}]
 
 \end{document}
