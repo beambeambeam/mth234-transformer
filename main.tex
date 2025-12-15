@@ -6,6 +6,12 @@
 \renewcommand{\cftchappresnum}{Chapter }
 \setlength{\cftchapnumwidth}{5em}
 
+% Adjust TOC/LOF spacing to match titlesec chapter spacing
+\setlength{\cftbeforetoctitleskip}{-20pt}
+\setlength{\cftaftertoctitleskip}{20pt}
+\setlength{\cftbeforeloftitleskip}{-20pt}
+\setlength{\cftafterloftitleskip}{20pt}
+
 \usepackage{titlesec}
 \titleformat{\chapter}[display]
   {\normalfont\huge\bfseries}
